@@ -1,5 +1,6 @@
 # Config TOML
 [urls]
-appsURL = "https://apprenda-bluemix-api.mybluemix.net/api/v1/apps"
-bindURL = "https://apprenda-bluemix-api.mybluemix.net/api/v1/bind"
-unbindURL = "https://apprenda-bluemix-api.mybluemix.net/api/v1/unbind"
+apps = "https://apprenda-bluemix-api.mybluemix.net/api/v1/apps"
+bind = "https://apprenda-bluemix-api.mybluemix.net/api/v1/bind"
+unbind = "https://apprenda-bluemix-api.mybluemix.net/api/v1/unbind"
+scale = "https://apprenda-bluemix-api.mybluemix.net/api/v1/scale"

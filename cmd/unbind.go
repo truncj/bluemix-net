@@ -45,7 +45,7 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			fmt.Println("Config file not found...")
 		} else {
-			unbindURL = viper.GetString("urls.unbindURL")
+			unbindURL = viper.GetString("urls.unbind")
 		}
 
 		req, err := http.NewRequest("DELETE", unbindURL+"/"+alias+"/"+version, nil)

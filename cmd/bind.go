@@ -46,7 +46,7 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			fmt.Println("Config file not found...")
 		} else {
-			bindURL = viper.GetString("urls.bindURL")
+			bindURL = viper.GetString("urls.bind")
 		}
 
 		req, err := http.NewRequest("POST", bindURL+"/"+alias+"/"+version, nil)

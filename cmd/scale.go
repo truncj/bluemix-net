@@ -24,12 +24,14 @@ import (
 	"github.com/spf13/viper"
 )
 
-// stopCmd represents the stop command
-var stopCmd = &cobra.Command{
-	Use:   "stop",
-	Short: "Stop an application",
+var component, count string
+
+// scaleCmd represents the scale command
+var scaleCmd = &cobra.Command{
+	Use:   "scale",
+	Short: "Scale the components of an application to specific quantity",
 	Run: func(cmd *cobra.Command, args []string) {
-		var appsURL string
+		var scaleURL string
 
 		viper.SetConfigName("app")
 		viper.AddConfigPath("./cmd/config")
@@ -38,10 +40,10 @@ var stopCmd = &cobra.Command{
 		if err != nil {
 			fmt.Println("Config file not found...")
 		} else {
-			appsURL = viper.GetString("urls.apps")
+			scaleURL = viper.GetString("urls.scale")
 		}
 
-		req, err := http.NewRequest("POST", appsURL+"/"+alias+"/"+version+"/state/0", nil)
+		req, err := http.NewRequest("POST", scaleURL+"/"+alias+"/"+version+"/"+component+"/"+count, nil)
 		resp, _ := http.DefaultClient.Do(req)
 
 		if err != nil {
@@ -59,17 +61,20 @@ var stopCmd = &cobra.Command{
 }
 
 func init() {
-	appCmd.AddCommand(stopCmd)
-	stopCmd.Flags().StringVarP(&alias, "alias", "a", "", "Application alias")
-	stopCmd.Flags().StringVarP(&version, "version", "v", "", "Version alias")
+	appCmd.AddCommand(scaleCmd)
+	scaleCmd.Flags().StringVarP(&alias, "alias", "a", "", "Application alias")
+	scaleCmd.Flags().StringVarP(&version, "version", "v", "", "Version alias")
+	scaleCmd.Flags().StringVarP(&component, "component", "c", "", "Component alias")
+	scaleCmd.Flags().StringVarP(&count, "quantity", "q", "", "Requested component quantity")
+
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// stopCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// scaleCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// stopCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// scaleCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 }

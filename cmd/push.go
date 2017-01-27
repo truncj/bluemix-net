@@ -53,7 +53,7 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			fmt.Println("Config file not found...")
 		} else {
-			appsURL = viper.GetString("urls.appsURL")
+			appsURL = viper.GetString("urls.apps")
 		}
 
 		if f, err = os.Open(archive); err != nil {
