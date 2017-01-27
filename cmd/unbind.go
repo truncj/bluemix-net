@@ -17,6 +17,7 @@ package cmd
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 
@@ -24,9 +25,9 @@ import (
 	"github.com/spf13/viper"
 )
 
-// deleteCmd represents the delete command
-var deleteCmd = &cobra.Command{
-	Use:   "delete",
+// unbindCmd represents the unbind command
+var unbindCmd = &cobra.Command{
+	Use:   "unbind",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -35,7 +36,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		var appsURL string
+		var unbindURL string
 
 		viper.SetConfigName("app")
 		viper.AddConfigPath("./cmd/config")
@@ -44,20 +45,21 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			fmt.Println("Config file not found...")
 		} else {
-			appsURL = viper.GetString("urls.appsURL")
+			unbindURL = viper.GetString("urls.unbindURL")
 		}
 
-		req, err := http.NewRequest("DELETE", appsURL+"/"+alias, nil)
+		req, err := http.NewRequest("DELETE", unbindURL+"/"+alias+"/"+version, nil)
 		resp, _ := http.DefaultClient.Do(req)
 
 		if err != nil {
-			fmt.Println(err)
+			log.Fatal(err)
 			os.Exit(0)
 		}
+
 		defer resp.Body.Close()
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Println(err)
+			log.Fatal(err)
 			os.Exit(0)
 		}
 		fmt.Printf(string(body))
@@ -65,16 +67,17 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	appCmd.AddCommand(deleteCmd)
-	deleteCmd.Flags().StringVarP(&alias, "alias", "a", "", "Application alias")
+	appCmd.AddCommand(unbindCmd)
+	unbindCmd.Flags().StringVarP(&alias, "alias", "a", "", "Application alias")
+	unbindCmd.Flags().StringVarP(&version, "version", "v", "", "Version alias")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// deleteCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// unbindCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// deleteCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// unbindCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 }

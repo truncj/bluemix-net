@@ -24,9 +24,11 @@ import (
 	"github.com/spf13/viper"
 )
 
-// deleteCmd represents the delete command
-var deleteCmd = &cobra.Command{
-	Use:   "delete",
+var version string
+
+// bindCmd represents the bind command
+var bindCmd = &cobra.Command{
+	Use:   "bind",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -35,7 +37,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		var appsURL string
+		var bindURL string
 
 		viper.SetConfigName("app")
 		viper.AddConfigPath("./cmd/config")
@@ -44,10 +46,10 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			fmt.Println("Config file not found...")
 		} else {
-			appsURL = viper.GetString("urls.appsURL")
+			bindURL = viper.GetString("urls.bindURL")
 		}
 
-		req, err := http.NewRequest("DELETE", appsURL+"/"+alias, nil)
+		req, err := http.NewRequest("POST", bindURL+"/"+alias+"/"+version, nil)
 		resp, _ := http.DefaultClient.Do(req)
 
 		if err != nil {
@@ -65,16 +67,17 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	appCmd.AddCommand(deleteCmd)
-	deleteCmd.Flags().StringVarP(&alias, "alias", "a", "", "Application alias")
+	appCmd.AddCommand(bindCmd)
+	bindCmd.Flags().StringVarP(&alias, "alias", "a", "", "Application alias")
+	bindCmd.Flags().StringVarP(&version, "version", "v", "", "Version alias")
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// deleteCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// bindCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// deleteCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// bindCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 }

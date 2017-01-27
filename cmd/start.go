@@ -24,9 +24,9 @@ import (
 	"github.com/spf13/viper"
 )
 
-// deleteCmd represents the delete command
-var deleteCmd = &cobra.Command{
-	Use:   "delete",
+// startCmd represents the start command
+var startCmd = &cobra.Command{
+	Use:   "start",
 	Short: "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
@@ -47,7 +47,7 @@ to quickly create a Cobra application.`,
 			appsURL = viper.GetString("urls.appsURL")
 		}
 
-		req, err := http.NewRequest("DELETE", appsURL+"/"+alias, nil)
+		req, err := http.NewRequest("POST", appsURL+"/"+alias+"/"+version+"/state/1", nil)
 		resp, _ := http.DefaultClient.Do(req)
 
 		if err != nil {
@@ -65,16 +65,18 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	appCmd.AddCommand(deleteCmd)
-	deleteCmd.Flags().StringVarP(&alias, "alias", "a", "", "Application alias")
+	appCmd.AddCommand(stopCmd)
+	startCmd.Flags().StringVarP(&alias, "alias", "a", "", "Application alias")
+	startCmd.Flags().StringVarP(&version, "version", "v", "", "Version alias")
+
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// deleteCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// startCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// deleteCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 }
