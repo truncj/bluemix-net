@@ -65,7 +65,7 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	appCmd.AddCommand(stopCmd)
+	appCmd.AddCommand(startCmd)
 	startCmd.Flags().StringVarP(&alias, "alias", "a", "", "Application alias")
 	startCmd.Flags().StringVarP(&version, "version", "v", "", "Version alias")
 
