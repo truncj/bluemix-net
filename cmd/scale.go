@@ -34,7 +34,8 @@ var scaleCmd = &cobra.Command{
 		var scaleURL string
 
 		viper.SetConfigName("app")
-		viper.AddConfigPath("./cmd/config")
+		configPath := getPath()
+		viper.AddConfigPath(*configPath)
 
 		err := viper.ReadInConfig()
 		if err != nil {

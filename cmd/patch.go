@@ -35,8 +35,11 @@ var patchCmd = &cobra.Command{
 	Short: "Update an existing application",
 	Run: func(cmd *cobra.Command, args []string) {
 		var appsURL string
+
 		viper.SetConfigName("app")
-		viper.AddConfigPath("./cmd/config")
+		configPath := getPath()
+		viper.AddConfigPath(*configPath)
+
 		err := viper.ReadInConfig()
 		if err != nil {
 			fmt.Println("Config file not found...")

@@ -32,10 +32,10 @@ var listCmd = &cobra.Command{
 		var appsURL string
 
 		viper.SetConfigName("app")
-		viper.AddConfigPath("./cmd/config")
+		configPath := getPath()
+		viper.AddConfigPath(*configPath)
 
-		err := viper.ReadInConfig()
-		if err != nil {
+		if err = viper.ReadInConfig(); err != nil {
 			fmt.Println("Config file not found...")
 		} else {
 			appsURL = viper.GetString("urls.apps")

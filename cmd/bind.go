@@ -40,7 +40,8 @@ to quickly create a Cobra application.`,
 		var bindURL string
 
 		viper.SetConfigName("app")
-		viper.AddConfigPath("./cmd/config")
+		configPath := getPath()
+		viper.AddConfigPath(*configPath)
 
 		err := viper.ReadInConfig()
 		if err != nil {
