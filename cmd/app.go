@@ -25,26 +25,20 @@ var config string
 // appCmd represents the app command
 var appCmd = &cobra.Command{
 	Use:   "app",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Interact with Apprenda apps through Bluemix",
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO: Work your own magic here
-		fmt.Println("app called")
 		//var dir, err = homedir.Dir()
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
-		fmt.Println("Default Config Path: " + config)
+		if config != "" {
+			fmt.Println("Default Config Path: " + config)
+		} else {
+			fmt.Println("Default config path is not set")
+		}
 	},
 }
 
 func init() {
-	appCmd.PersistentFlags().StringVarP(&config, "config", "c", "", "configuration path")
+	appCmd.PersistentFlags().StringVarP(&config, "config", "", "", "configuration path")
 	RootCmd.AddCommand(appCmd)
 
 	// Here you will define your flags and configuration settings.

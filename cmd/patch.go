@@ -27,6 +27,7 @@ import (
 	"github.com/cheggaaa/pb"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	spin "github.com/tj/go-spin"
 )
 
 // patchCmd represents the patch command
@@ -35,6 +36,7 @@ var patchCmd = &cobra.Command{
 	Short: "Update an existing application",
 	Run: func(cmd *cobra.Command, args []string) {
 		var appsURL string
+		var resp *http.Response
 
 		viper.SetConfigName("app")
 		configPath := getPath()
@@ -88,17 +90,29 @@ var patchCmd = &cobra.Command{
 			if err := mpw.Close(); err != nil {
 				log.Fatal(err)
 			}
+			bar.FinishPrint("Upload Complete")
+
 		}()
 
-		req, err := http.NewRequest("PUT", appsURL+"/"+alias, r)
-		req.Header.Set("Content-Type", mpw.FormDataContentType())
-		if err != nil {
-			log.Fatal(err)
-		}
+		go func() {
+			req, err := http.NewRequest("PUT", appsURL+"/"+alias, r)
+			req.Header.Set("Content-Type", mpw.FormDataContentType())
+			if err != nil {
+				log.Fatal(err)
+			}
 
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			log.Fatal(err)
+			resp, err = http.DefaultClient.Do(req)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
+
+		s := spin.New()
+		for resp == nil {
+			if bar.Get() == bar.Total {
+				fmt.Printf("\r  \033[36mProcessing\033[m %s ", s.Next())
+				time.Sleep(100 * time.Millisecond)
+			}
 		}
 
 		defer resp.Body.Close()
@@ -106,6 +120,7 @@ var patchCmd = &cobra.Command{
 		if err != nil {
 			log.Fatal(err)
 		}
+		fmt.Print("\n\n")
 		fmt.Print(string(ret))
 	},
 }

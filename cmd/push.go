@@ -39,19 +39,10 @@ var err error
 // pushCmd represents the push command
 var pushCmd = &cobra.Command{
 	Use:   "push",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Deploy a new application",
 	Run: func(cmd *cobra.Command, args []string) {
 		var appsURL string
 		var resp *http.Response
-		// var wg sync.WaitGroup
-		//
-		// wg.Add(2)
 
 		viper.SetConfigName("app")
 		configPath := getPath()
@@ -105,13 +96,11 @@ to quickly create a Cobra application.`,
 			if err := mpw.Close(); err != nil {
 				log.Fatal(err)
 			}
-			//wg.Done()
 			bar.FinishPrint("Upload Complete")
 
 		}()
 
 		go func() {
-			// wg.Wait()
 			req, err := http.NewRequest("POST", appsURL+"/"+alias, r)
 			req.Header.Set("Content-Type", mpw.FormDataContentType())
 			if err != nil {
@@ -137,6 +126,7 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			log.Fatal(err)
 		}
+		fmt.Print("\n\n")
 		fmt.Print(string(ret))
 	},
 }
