@@ -22,6 +22,10 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"os/exec"
+	"path"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/cheggaaa/pb"
@@ -43,6 +47,7 @@ var pushCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		var appsURL string
 		var resp *http.Response
+		var dir string
 
 		viper.SetConfigName("app")
 		configPath := getPath()
@@ -53,6 +58,33 @@ var pushCmd = &cobra.Command{
 			fmt.Println("Config file not found...")
 		} else {
 			appsURL = viper.GetString("urls.apps")
+		}
+
+		if dir, err = os.Getwd(); err != nil {
+			log.Fatal(err)
+		}
+
+		if archive == "" {
+
+			fmt.Println("Creating application archive..")
+			file := findExt(dir, "sln")
+			fmt.Println("Using Solution File: " + file[0])
+			filename := strings.TrimSuffix(file[0], ".sln")
+			archivename := filename + ".zip"
+			fmt.Println("Application Archive Created: " + archivename)
+			archive = path.Join(dir, archivename)
+			command := exec.Command("acs", "NewPackage", "-Sln", file[0], "-O", archive)
+			command.Run()
+
+			//Alias must be abc/0-9
+			rp := regexp.MustCompile("[^0-9a-zA-Z]+")
+			name = rp.ReplaceAllString(filename, "")
+			alias = name
+
+			//Alias must be 20 characters or less
+			if len(filename) > 20 {
+				alias = alias[:20]
+			}
 		}
 
 		if f, err = os.Open(archive); err != nil {
@@ -135,7 +167,7 @@ func init() {
 	pushCmd.Flags().StringVarP(&name, "name", "n", "", "Application name")
 	pushCmd.Flags().StringVarP(&alias, "alias", "a", "", "Application alias")
 	pushCmd.Flags().StringVarP(&desc, "desc", "d", "", "Application description")
-	pushCmd.Flags().StringVar(&archive, "archive", "", "Path to application archive.zip")
+	pushCmd.Flags().StringVar(&archive, "archive", "", "Path to application archive")
 	appCmd.AddCommand(pushCmd)
 
 	// Here you will define your flags and configuration settings.

@@ -127,7 +127,7 @@ var patchCmd = &cobra.Command{
 
 func init() {
 	patchCmd.Flags().StringVarP(&alias, "alias", "a", "", "Application alias")
-	patchCmd.Flags().StringVar(&archive, "archive", "", "Path to application archive.zip")
+	patchCmd.Flags().StringVar(&archive, "archive", "", "Path to application archive")
 	appCmd.AddCommand(patchCmd)
 
 	// Here you will define your flags and configuration settings.
