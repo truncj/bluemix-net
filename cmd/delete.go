@@ -17,8 +17,11 @@ package cmd
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
+	"regexp"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -30,6 +33,7 @@ var deleteCmd = &cobra.Command{
 	Short: "Delete an application",
 	Run: func(cmd *cobra.Command, args []string) {
 		var appsURL string
+		var dir string
 
 		viper.SetConfigName("app")
 		configPath := getPath()
@@ -40,6 +44,29 @@ var deleteCmd = &cobra.Command{
 			fmt.Println("Config file not found...")
 		} else {
 			appsURL = viper.GetString("urls.apps")
+		}
+
+		if dir, err = os.Getwd(); err != nil {
+			log.Fatal(err)
+		}
+
+		if alias == "" {
+
+			file := *findExt(dir, "sln")
+			filename := strings.TrimSuffix(file[0], ".sln")
+			val := confirm("Are you sure you want to delete "+filename+" from Bluemix?", 3)
+			if !val {
+				log.Fatal(val)
+			}
+			//Alias must be abc/0-9
+			rp := regexp.MustCompile("[^0-9a-zA-Z]+")
+			name = rp.ReplaceAllString(filename, "")
+			alias = name
+
+			//Alias must be 20 characters or less
+			if len(filename) > 20 {
+				alias = alias[:20]
+			}
 		}
 
 		req, err := http.NewRequest("DELETE", appsURL+"/"+alias, nil)

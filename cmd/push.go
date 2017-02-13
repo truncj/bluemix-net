@@ -67,7 +67,7 @@ var pushCmd = &cobra.Command{
 		if archive == "" {
 
 			fmt.Println("Creating application archive..")
-			file := findExt(dir, "sln")
+			file := *findExt(dir, "sln")
 			fmt.Println("Using Solution File: " + file[0])
 			filename := strings.TrimSuffix(file[0], ".sln")
 			archivename := filename + ".zip"
